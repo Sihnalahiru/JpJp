@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>My Japan | JFT-Basic & Irodori Master PWA</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MyJapan">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Load Complete Data without Freeze -->
+  <script src="app_data.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', 'Noto Sans JP', sans-serif;
+      background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #030712);
+      color: #f8fafc;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    ruby { ruby-align: center; }
+    rt { font-size: 0.65em; color: #38bdf8; font-weight: 500; user-select: none; }
+    .smooth-scroll { -webkit-overflow-scrolling: touch; }
+  </style>
+</head>
+<body class="flex flex-col pb-24 md:pb-6">
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="sticky top-0 z-50 glass-card border-b border-slate-700/60 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-rose-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <i data-lucide="torii-gate" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-extrabold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+            My Japan <span class="text-xs text-rose-400 font-semibold">JFT Pro</span>
+          </h1>
+          <p class="text-[10px] text-slate-400">මගේ ජපානය • සම්පූර්ණ දත්ත එකතුව</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-bold">
+          <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span id="streakCount">14</span>
+        </div>
+        <div class="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-bold">
+          <i data-lucide="flower-2" class="w-3.5 h-3.5 text-rose-400"></i>
+          <span id="coinCount">1,450</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="max-w-7xl mx-auto px-4 py-5 w-full flex-grow space-y-6">
+    
+    <!-- 4-HOUR FLEXIBLE STUDY TRACKER -->
+    <div class="glass-card rounded-2xl p-4 border border-indigo-500/20 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-4">
+        <div class="w-14 h-14 rounded-full bg-indigo-600/20 border-2 border-indigo-500 flex items-center justify-center font-bold text-white text-sm">
+          2.5h
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-white">දෛනික පැය 4 අධ්‍යයන ප්‍රගතිය (Flexible Timer)</h2>
+          <p class="text-xs text-slate-400">දවස තුළ ඕනෑම වේලාවක අවම පැය 4 සම්පූර්ණ කරන්න (150/240 මිනිත්තු).</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2 text-xs">
+        <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Kana 141 (2x)</span>
+        <span class="px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">1094 Kanji</span>
+        <span class="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/20">15 Mock Exams</span>
+      </div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 overflow-x-auto smooth-scroll">
+      <button onclick="switchTab('kanji')" id="tab-kanji" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white flex items-center space-x-2 flex-shrink-0">
+        <i data-lucide="languages" class="w-4 h-4"></i>
+        <span>Kanji Vault (450 + 644)</span>
+      </button>
+      <button onclick="switchTab('vocab')" id="tab-vocab" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/60 text-slate-300 flex items-center space-x-2 flex-shrink-0">
+        <i data-lucide="book-open" class="w-4 h-4"></i>
+        <span>වචන මාලාව (3,200+)</span>
+      </button>
+      <button onclick="switchTab('grammar')" id="tab-grammar" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/60 text-slate-300 flex items-center space-x-2 flex-shrink-0">
+        <i data-lucide="book-marked" class="w-4 h-4"></i>
+        <span>ව්‍යාකරණ (පිටු 245)</span>
+      </button>
+      <button onclick="switchTab('kana')" id="tab-kana" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/60 text-slate-300 flex items-center space-x-2 flex-shrink-0">
+        <i data-lucide="pencil" class="w-4 h-4"></i>
+        <span>කනා අක්ෂර 141 (2x)</span>
+      </button>
+      <button onclick="switchTab('cbt')" id="tab-cbt" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/60 text-slate-300 flex items-center space-x-2 flex-shrink-0">
+        <i data-lucide="timer" class="w-4 h-4"></i>
+        <span>JFT CBT විභාග 15</span>
+      </button>
+    </div>
+
+    <!-- ================= 1. KANJI VAULT (450 JFT + 644 IRODORI) ================= -->
+    <section id="view-kanji" class="space-y-4">
+      <div class="glass-card rounded-2xl p-5 border border-indigo-500/20">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-4 border-b border-slate-700">
+          <div>
+            <h3 class="text-lg font-bold text-white">Kanji Master Vault (කන්ජි 1,094)</h3>
+            <p class="text-xs text-slate-400">JFT Basic 450 සහ Irodori 644 සත්‍ය Kanji සම්පූර්ණ එකතුව (Zero Data Missing).</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="setKanjiDataset('450')" id="btn-kanji-450" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white">JFT 450 Master</button>
+            <button onclick="setKanjiDataset('644')" id="btn-kanji-644" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400">Irodori 644</button>
+          </div>
+        </div>
+
+        <!-- Search & Pagination Controls -->
+        <div class="flex items-center justify-between gap-3 my-4">
+          <input type="text" id="kanjiSearchInput" onkeyup="handleKanjiSearch()" placeholder="කන්ජි, Romaji හෝ සිංහලෙන් සොයන්න..." 
+                 class="w-full sm:w-80 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <div class="flex items-center space-x-2 text-xs flex-shrink-0">
+            <button onclick="changeKanjiPage(-1)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">◀</button>
+            <span id="kanjiPageInfo" class="font-mono text-slate-300">1 / 18</span>
+            <button onclick="changeKanjiPage(1)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">▶</button>
+          </div>
+        </div>
+
+        <!-- Kanji Grid & Selected Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2">
+            <div id="kanjiGridContainer" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2.5">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+          <!-- Detailed Kanji Card -->
+          <div class="lg:col-span-1">
+            <div id="kanjiDetailBox" class="bg-slate-900/90 rounded-2xl p-5 border border-indigo-500/30 space-y-3 sticky top-24">
+              <span id="cardKanji" class="text-6xl font-black text-white block text-center py-2">日</span>
+              <div class="text-xs space-y-2 border-t border-slate-800 pt-3">
+                <p><strong>Hiragana / Furigana:</strong> <span id="cardFurigana" class="text-indigo-300 font-mono text-sm">ひ, にち</span></p>
+                <p><strong>Romaji:</strong> <span id="cardRomaji" class="text-slate-300 font-mono">hi, nichi</span></p>
+                <p><strong>සිංහල තේරුම:</strong> <span id="cardSinhala" class="text-amber-300 font-semibold text-sm">දවස / ඉර</span></p>
+                <div id="cardMnemonicBox" class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 text-[11px] leading-relaxed">
+                  <strong>මතක කතාව (Mnemonic):</strong> <span id="cardMnemonic">දවස උදාවන විට ඉර පායයි.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. VOCABULARY EXPLORER (3,200+ ROWS) ================= -->
+    <section id="view-vocab" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-5 border border-slate-700">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-4 border-b border-slate-700">
+          <div>
+            <h3 class="text-lg font-bold text-white">ත්‍රිභාෂා වචන මාලාව (Vocabulary Explorer)</h3>
+            <p class="text-xs text-slate-400">Shokyu 2 (1,835), Starter (349), Master List (465), Topics (274) සියලුම දත්ත.</p>
+          </div>
+          <select id="vocabDatasetSelect" onchange="changeVocabDataset()" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-3 py-1.5 text-white">
+            <option value="shokyu2">Irodori Shokyu 2 (1,835 Words)</option>
+            <option value="starter">Irodori Starter A1 (349 Words)</option>
+            <option value="master">JFT Master List (465 Words)</option>
+            <option value="topics">JFT 4 Topics (274 Words)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-between my-3">
+          <input type="text" id="vocabSearchInput" onkeyup="handleVocabSearch()" placeholder="වචනය, Romaji හෝ තේරුම සොයන්න..." 
+                 class="w-72 bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none">
+          <div class="flex items-center space-x-2 text-xs">
+            <button onclick="changeVocabPage(-1)" class="px-2.5 py-1 rounded bg-slate-800">◀</button>
+            <span id="vocabPageInfo" class="font-mono text-slate-300">1 / 74</span>
+            <button onclick="changeVocabPage(1)" class="px-2.5 py-1 rounded bg-slate-800">▶</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-800/80 text-slate-400 uppercase text-[10px]">
+              <tr>
+                <th class="py-2.5 px-3">ජපන් (Kanji / Kana)</th>
+                <th class="py-2.5 px-3">Reading</th>
+                <th class="py-2.5 px-3">Romaji</th>
+                <th class="py-2.5 px-3">English</th>
+                <th class="py-2.5 px-3">සිංහල තේරුම</th>
+              </tr>
+            </thead>
+            <tbody id="vocabTableBody" class="divide-y divide-slate-800/60 bg-slate-900/40">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3. GRAMMAR COMPENDIUM (245 PAGES) ================= -->
+    <section id="view-grammar" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-5 border border-slate-700">
+        <h3 class="text-lg font-bold text-white mb-1">ව්‍යාකරණ සංග්‍රහය (Irodori 245p Complete)</h3>
+        <p class="text-xs text-slate-400 mb-4">සියලුම Grammar Patterns, Functions, උදාහරණ වාක්‍ය සහ සිංහල/ඉංග්‍රීසි විස්තර.</p>
+        <div id="grammarCardsList" class="space-y-3 max-h-[600px] overflow-y-auto pr-2 smooth-scroll">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 4. KANA 141 DOJO ================= -->
+    <section id="view-kana" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-5 border border-emerald-500/20">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+          <h3 class="text-lg font-bold text-white">අක්ෂර 141 කනා පුහුණුව (දිනපතා දෙවරක්)</h3>
+          <span class="text-xs text-emerald-400 font-bold">141 Characters</span>
+        </div>
+        <div id="kana141Grid" class="grid grid-cols-6 sm:grid-cols-10 gap-2 mt-4 max-h-[500px] overflow-y-auto pr-1">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 5. JFT CBT EXAM ARENA (15 PAPERS) ================= -->
+    <section id="view-cbt" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-6 border border-rose-500/30">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-700">
+          <div>
+            <span class="text-[10px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded">PROMETRIC CBT MOCK 01 - 15</span>
+            <h2 class="text-lg font-bold text-white mt-1">JFT-Basic <ruby>本番<rt>ほんばん</rt></ruby>模試 (60分 / 65問)</h2>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block"><ruby>残<rt>のこ</rt></ruby>り<ruby>時間<rt>じかん</rt></ruby></span>
+            <span id="examTimer" class="text-xl font-mono font-bold text-amber-400">60:00</span>
+          </div>
+        </div>
+
+        <div class="my-6 space-y-4">
+          <div class="flex justify-between text-xs text-slate-400">
+            <span><ruby>問題<rt>もんだい</rt></ruby> <span id="cbtQNum" class="text-white font-bold text-sm">1</span> / 65</span>
+            <span id="cbtSectionTag">文字・語彙 (Vocabulary)</span>
+          </div>
+          <div id="cbtPrompt" class="p-4 bg-slate-900/90 rounded-xl border border-slate-700 text-base sm:text-lg leading-loose text-slate-100">
+            <!-- Pure Furigana Question -->
+          </div>
+          <div id="cbtOptions" class="grid grid-cols-1 gap-2.5">
+            <!-- Options -->
+          </div>
+        </div>
+
+        <div class="flex justify-between pt-4 border-t border-slate-700">
+          <button onclick="prevCbtQ()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs text-slate-300">◀ まえへ</button>
+          <button onclick="nextCbtQ()" id="btnCbtNext" class="px-5 py-2 rounded-xl bg-indigo-600 text-xs text-white">つぎへ ▶</button>
+          <button onclick="finishCbtExam()" id="btnCbtFinish" class="px-5 py-2 rounded-xl bg-emerald-600 text-xs text-white hidden">テスト終了</button>
+        </div>
+
+        <div id="cbtReviewArea" class="hidden mt-6 pt-4 border-t border-indigo-500/40">
+          <h4 class="text-sm font-bold text-indigo-300 mb-2">ප්‍රශ්න පත්‍ර විවරණය (Trilingual Explanations)</h4>
+          <div id="cbtReviewItems" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= JAVASCRIPT ENGINE ================= -->
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById('view-' + tabId).classList.remove('hidden');
+      document.querySelectorAll('.smooth-scroll button').forEach(b => {
+        b.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/60 text-slate-300 flex items-center space-x-2 flex-shrink-0';
+      });
+      document.getElementById('tab-' + tabId).className = 'px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white flex items-center space-x-2 flex-shrink-0';
+    }
+
+    // --- KANJI VAULT ENGINE (Zero Freeze Virtual Pagination) ---
+    let kanjiCurrentSet = '450';
+    let kanjiPage = 0;
+    const KANJI_PER_PAGE = 24;
+    let filteredKanjiList = [];
+
+    function initKanjiVault() {
+      filteredKanjiList = window.APP_DATA ? (kanjiCurrentSet === '450' ? window.APP_DATA.kanji_450 : window.APP_DATA.kanji_644) : [];
+      kanjiPage = 0;
+      renderKanjiPage();
+    }
+
+    function setKanjiDataset(set) {
+      kanjiCurrentSet = set;
+      document.getElementById('btn-kanji-450').className = set === '450' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400';
+      document.getElementById('btn-kanji-644').className = set === '644' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400';
+      initKanjiVault();
+    }
+
+    function handleKanjiSearch() {
+      const q = document.getElementById('kanjiSearchInput').value.toLowerCase().trim();
+      const raw = kanjiCurrentSet === '450' ? window.APP_DATA.kanji_450 : window.APP_DATA.kanji_644;
+      filteredKanjiList = raw.filter(item => {
+        const k = (item['Kanji'] || item['Japanese Kanji'] || '').toLowerCase();
+        const r = (item['Romaji'] || '').toLowerCase();
+        const s = (item['Sinhala Meaning'] || '').toLowerCase();
+        const e = (item['English Meaning'] || '').toLowerCase();
+        return k.includes(q) || r.includes(q) || s.includes(q) || e.includes(q);
+      });
+      kanjiPage = 0;
+      renderKanjiPage();
+    }
+
+    function changeKanjiPage(dir) {
+      const maxPages = Math.ceil(filteredKanjiList.length / KANJI_PER_PAGE);
+      if(kanjiPage + dir >= 0 && kanjiPage + dir < maxPages) {
+        kanjiPage += dir;
+        renderKanjiPage();
+      }
+    }
+
+    function renderKanjiPage() {
+      const container = document.getElementById('kanjiGridContainer');
+      container.innerHTML = '';
+      const start = kanjiPage * KANJI_PER_PAGE;
+      const pageItems = filteredKanjiList.slice(start, start + KANJI_PER_PAGE);
+      const maxPages = Math.ceil(filteredKanjiList.length / KANJI_PER_PAGE) || 1;
+      document.getElementById('kanjiPageInfo').innerText = `${kanjiPage + 1} / ${maxPages}`;
+
+      pageItems.forEach(item => {
+        const char = item['Kanji'] || item['Japanese Kanji'] || '';
+        const btn = document.createElement('button');
+        btn.className = 'p-3 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-indigo-500 flex flex-col items-center justify-center transition active:scale-95';
+        btn.innerHTML = `<span class="text-2xl font-black text-white">${char}</span>`;
+        btn.onclick = () => selectKanjiCard(item);
+        container.appendChild(btn);
+      });
+
+      if(pageItems.length > 0) selectKanjiCard(pageItems[0]);
+    }
+
+    function selectKanjiCard(item) {
+      document.getElementById('cardKanji').innerText = item['Kanji'] || item['Japanese Kanji'] || '';
+      document.getElementById('cardFurigana').innerText = item['Hiragana'] || item['Furigana'] || '';
+      document.getElementById('cardRomaji').innerText = item['Romaji'] || '';
+      document.getElementById('cardSinhala').innerText = item['Sinhala Meaning'] || '';
+      const mBox = document.getElementById('cardMnemonicBox');
+      if(item['Sinhala Mnemonic Story']) {
+        mBox.classList.remove('hidden');
+        document.getElementById('cardMnemonic').innerText = item['Sinhala Mnemonic Story'];
+      } else {
+        mBox.classList.add('hidden');
+      }
+    }
+
+    // --- VOCABULARY ENGINE (Paginated 3,200+ Words) ---
+    let vocabPage = 0;
+    const VOCAB_PER_PAGE = 25;
+    let activeVocabList = [];
+
+    function changeVocabDataset() {
+      const val = document.getElementById('vocabDatasetSelect').value;
+      if(val === 'shokyu2') activeVocabList = window.APP_DATA.vocab_shokyu2;
+      else if(val === 'starter') activeVocabList = window.APP_DATA.vocab_starter_x;
+      else if(val === 'master') activeVocabList = window.APP_DATA.vocab_master;
+      else if(val === 'topics') activeVocabList = window.APP_DATA.vocab_4topics;
+      vocabPage = 0;
+      renderVocabTable();
+    }
+
+    function handleVocabSearch() {
+      const q = document.getElementById('vocabSearchInput').value.toLowerCase().trim();
+      const val = document.getElementById('vocabDatasetSelect').value;
+      let raw = window.APP_DATA.vocab_shokyu2;
+      if(val === 'starter') raw = window.APP_DATA.vocab_starter_x;
+      else if(val === 'master') raw = window.APP_DATA.vocab_master;
+      else if(val === 'topics') raw = window.APP_DATA.vocab_4topics;
+
+      activeVocabList = raw.filter(item => {
+        const j = (item['Japanese (Kanji/Kana)'] || item['Japanese'] || '').toLowerCase();
+        const r = (item['Romaji'] || '').toLowerCase();
+        const e = (item['English Meaning'] || item['English'] || '').toLowerCase();
+        const s = (item['Sinhala Meaning'] || item['Sinhala'] || '').toLowerCase();
+        return j.includes(q) || r.includes(q) || e.includes(q) || s.includes(q);
+      });
+      vocabPage = 0;
+      renderVocabTable();
+    }
+
+    function changeVocabPage(dir) {
+      const maxPages = Math.ceil(activeVocabList.length / VOCAB_PER_PAGE);
+      if(vocabPage + dir >= 0 && vocabPage + dir < maxPages) {
+        vocabPage += dir;
+        renderVocabTable();
+      }
+    }
+
+    function renderVocabTable() {
+      const tbody = document.getElementById('vocabTableBody');
+      tbody.innerHTML = '';
+      const start = vocabPage * VOCAB_PER_PAGE;
+      const pageItems = activeVocabList.slice(start, start + VOCAB_PER_PAGE);
+      const maxPages = Math.ceil(activeVocabList.length / VOCAB_PER_PAGE) || 1;
+      document.getElementById('vocabPageInfo').innerText = `${vocabPage + 1} / ${maxPages}`;
+
+      pageItems.forEach(v => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-800/40 border-b border-slate-800';
+        tr.innerHTML = `
+          <td class="py-2 px-3 font-bold text-white">${v['Japanese (Kanji/Kana)'] || v['Japanese'] || ''}</td>
+          <td class="py-2 px-3 text-slate-400 font-mono text-[11px]">${v['Reading (Hiragana/Accent)'] || v['Furigana'] || ''}</td>
+          <td class="py-2 px-3 text-slate-400 font-mono text-[11px]">${v['Romaji'] || ''}</td>
+          <td class="py-2 px-3 text-slate-200">${v['English Meaning'] || v['English'] || ''}</td>
+          <td class="py-2 px-3 text-amber-300 font-medium">${v['Sinhala Meaning'] || v['Sinhala'] || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // --- GRAMMAR ENGINE ---
+    function renderGrammar() {
+      const list = document.getElementById('grammarCardsList');
+      list.innerHTML = '';
+      if(!window.APP_DATA || !window.APP_DATA.grammar_245) return;
+      window.APP_DATA.grammar_245.slice(0, 50).forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1.5 text-xs';
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-indigo-300 text-sm">${g['Grammar Pattern']}</span>
+            <span class="text-[10px] text-slate-400">${g['Page Ref']} (${g['Level']})</span>
+          </div>
+          <p class="text-slate-300"><strong>භාවිතය:</strong> ${g['Function / Usage']}</p>
+          <p class="text-slate-200"><strong>උදාහරණ:</strong> ${g['Japanese Example']} <span class="text-slate-400">(${g['Romaji']})</span></p>
+          <p class="text-amber-300"><strong>සිංහල:</strong> ${g['Sinhala Meaning']}</p>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // --- KANA 141 RENDERER ---
+    function renderKana() {
+      const grid = document.getElementById('kana141Grid');
+      grid.innerHTML = '';
+      if(!window.APP_DATA || !window.APP_DATA.kana_141) return;
+      window.APP_DATA.kana_141.forEach(k => {
+        const btn = document.createElement('button');
+        btn.className = 'p-2 rounded-xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center';
+        btn.innerHTML = `<span class="text-lg font-bold text-white">${k.char}</span><span class="text-[9px] text-slate-400">${k.romaji}</span>`;
+        grid.appendChild(btn);
+      });
+    }
+
+    // --- CBT MOCK EXAM ENGINE (Pure Furigana Rule) ---
+    let cbtIdx = 0;
+    let cbtAnswers = {};
+    const CBT_QUESTIONS = [
+      {
+        q: 'つぎの <ruby>文<rt>ぶん</rt></ruby>の （  ）には どの ことばを <ruby>入<rt>い</rt></ruby>れますか。<br><br><ruby>熱<rt>ねつ</rt></ruby>が ありますから、きょうは <ruby>会社<rt>かいしゃ</rt></ruby>を （  ）ます。',
+        opts: ['<ruby>休<rt>やす</rt></ruby>み', '<ruby>働<rt>はたら</rt></ruby>き', '<ruby>行<rt>い</rt></ruby>き', '<ruby>飲<rt>の</rt></ruby>み'],
+        c: 0,
+        si: 'නිවැරදි පිළිතුර 1: 休みます (නිවාඩු ගන්නවා). උණ ඇති නිසා අද වැඩට නොගොස් නිවාඩු ගන්නවා.',
+        en: 'Option 1: 休みます. I have a fever so I will take a day off from work.'
+      },
+      {
+        q: 'コンビニで <ruby>店員<rt>てんいん</rt></ruby>が いいます。<br>「お<ruby>弁当<rt>べんとう</rt></ruby>を （  ）しますか。」',
+        opts: ['あたため', 'たべ', 'つくり', 'かい'],
+        c: 0,
+        si: 'නිවැරදි පිළිතුර 1: あたためます (රත් කරනවා). කෑම පෙට්ටිය රත් කරල දෙන්නද?',
+        en: 'Option 1: あたためます (Warm up). Would you like your bento warmed up?'
+      }
+    ];
+
+    function loadCbtQ() {
+      const q = CBT_QUESTIONS[cbtIdx];
+      document.getElementById('cbtQNum').innerText = cbtIdx + 1;
+      document.getElementById('cbtPrompt').innerHTML = q.q;
+      const opts = document.getElementById('cbtOptions');
+      opts.innerHTML = '';
+      q.opts.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        const isSel = cbtAnswers[cbtIdx] === i;
+        btn.className = `w-full text-left p-3 rounded-xl border flex items-center space-x-3 text-sm ${isSel ? 'border-indigo-500 bg-indigo-600/30 text-white' : 'border-slate-700 bg-slate-900/60 text-slate-200'}`;
+        btn.innerHTML = `<span class="w-5 h-5 rounded-full border flex items-center justify-center text-xs font-bold">${i+1}</span><span>${opt}</span>`;
+        btn.onclick = () => { cbtAnswers[cbtIdx] = i; loadCbtQ(); };
+        opts.appendChild(btn);
+      });
+
+      if(cbtIdx === CBT_QUESTIONS.length - 1) {
+        document.getElementById('btnCbtNext').classList.add('hidden');
+        document.getElementById('btnCbtFinish').classList.remove('hidden');
+      } else {
+        document.getElementById('btnCbtNext').classList.remove('hidden');
+        document.getElementById('btnCbtFinish').classList.add('hidden');
+      }
+    }
+
+    function prevCbtQ() { if(cbtIdx > 0) { cbtIdx--; loadCbtQ(); } }
+    function nextCbtQ() { if(cbtIdx < CBT_QUESTIONS.length - 1) { cbtIdx++; loadCbtQ(); } }
+    function finishCbtExam() {
+      document.getElementById('cbtReviewArea').classList.remove('hidden');
+      const rev = document.getElementById('cbtReviewItems');
+      rev.innerHTML = '';
+      CBT_QUESTIONS.forEach((q, i) => {
+        const d = document.createElement('div');
+        d.className = 'p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs space-y-1';
+        d.innerHTML = `
+          <p class="font-bold ${cbtAnswers[i] === q.c ? 'text-emerald-400' : 'text-rose-400'}">ප්‍රශ්නය ${i+1}: ${cbtAnswers[i] === q.c ? '✓ නිවැරදියි' : '✗ වැරදියි'}</p>
+          <p class="text-amber-300"><strong>සිංහල:</strong> ${q.si}</p>
+          <p class="text-slate-300"><strong>English:</strong> ${q.en}</p>
+        `;
+        rev.appendChild(d);
+      });
+    }
+
+    // App Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      initKanjiVault();
+      changeVocabDataset();
+      renderGrammar();
+      renderKana();
+      loadCbtQ();
+    });
+  </script>
+</body>
+</html>
